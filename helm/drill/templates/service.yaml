@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "drill.fullname" . }}
+  labels:
+    app: {{ template "drill.name" . }}
+    chart: {{ template "drill.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- with .Values.additionalLabels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      port: 8047
+    - name: userport
+      port: 31010
+    - name: controlport
+      port: 31011
+    - name: dataport
+      port: 31012
+  selector:
+    app.kubernetes.io/name: {{ include "drill.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

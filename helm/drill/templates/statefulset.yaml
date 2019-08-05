@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "drill.fullname" . }}
+  labels:
+    app: {{ template "drill.name" . }}
+    chart: {{ template "drill.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- with .Values.additionalLabels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "drill.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "drill.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- with .Values.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    spec:
+      initContainers:
+      - name: zk-available
+        image: busybox
+        command: ['sh', '-c', 'until nc -z {{ .Release.Name }}-zookeeper 2181; do echo Waiting for ZK to come up; sleep 5; done; ']
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: HEAP_MEMORY_FRACTION
+              value: {{ .Values.heapMemoryFraction | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.logLevel | upper | quote }}
+            - name: ZOOKEEPER_HOST
+              value: "{{ .Release.Name }}-zookeeper:2181"
+            - name: DRILL_HOST_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          ports:
+            - containerPort: 8047
+              name: http
+            - containerPort: 31010
+              name: userport
+            - containerPort: 31011
+              name: controlport
+            - containerPort: 31012
+              name: dataport
+{{- if .Values.storage_plugins }}
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - |
+                   while [[ ! -d /tmp/drill/sys.storage_plugins/ ]]; do sleep 2; done;
+                   while [[ $(ls -1q /tmp/drill/sys.storage_plugins/ | wc -l) -lt 1 ]]; do sleep 2; done;
+ {{- $values := . -}}
+{{- range .Values.storage_plugins }}
+                    echo '{{ tpl ( .conf | toJson ) $values  }}'  > /tmp/drill/sys.storage_plugins/{{ .filename }}
+{{- end }}
+{{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- range .Values.volumes }}
+          volumeMounts:
+            - name: {{ .name }}
+              mountPath: {{ .path }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- range .Values.volumes }}
+      volumes:
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .claim }}
+    {{- end }}
