@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-sed -i "s/export DRILLBIT_OPTS=\"-Xms.*/export DRILLBIT_OPTS=\"-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:DefaultMaxRAMFraction=${HEAP_MEMORY_FRACTION:-2}\"/g" ${DRILL_HOME}/bin/drill-config.sh
+sed -i "s/export DRILLBIT_OPTS=\"-Xms.*/export DRILLBIT_OPTS=\"-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=${HEAP_MEMORY_FRACTION:-2}\"/g" ${DRILL_HOME}/bin/drill-config.sh
 
 if [[ -z "${ZOOKEEPER_HOST}" ]]; then
     echo 'No Zookeeper configured, starting in embedded mode...'

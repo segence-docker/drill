@@ -54,7 +54,7 @@ spec:
               name: controlport
             - containerPort: 31012
               name: dataport
-{{- if .Values.storage_plugins }}
+{{- if .Values.storagePlugins }}
           lifecycle:
             postStart:
               exec:
@@ -62,11 +62,9 @@ spec:
                   - "/bin/sh"
                   - "-c"
                   - |
-                   while [[ ! -d /tmp/drill/sys.storage_plugins/ ]]; do sleep 2; done;
-                   while [[ $(ls -1q /tmp/drill/sys.storage_plugins/ | wc -l) -lt 1 ]]; do sleep 2; done;
- {{- $values := . -}}
-{{- range .Values.storage_plugins }}
-                    echo '{{ tpl ( .conf | toJson ) $values  }}'  > /tmp/drill/sys.storage_plugins/{{ .filename }}
+                   touch ${DRILL_HOME}/conf/storage-plugins-override.conf;
+{{- range $storageConfig := .Values.storagePlugins }}
+                   echo '{{ template "drill.configEntry" $storageConfig | toJson }}'  >> ${DRILL_HOME}/conf/storage-plugins-override.conf
 {{- end }}
 {{- end }}
           resources:

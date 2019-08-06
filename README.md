@@ -14,7 +14,7 @@ Optional parameters (provided as environment variables):
 
 | **Environment variable** | **Description**                                                                                                      | **Default value** |
 |:---------------------------|:-------------------------------------------------------------------------------------------------------------------|:------------------|
-| `HEAP_MEMORY_FRACTION`     | Sets the [`DefaultMaxRAMFraction` JVM parameter](##Heap-memory) that configures the default Java heap memory size. | `2`               |
+| `HEAP_MEMORY_FRACTION`     | Sets the [`MaxRAMFraction` JVM parameter](##Heap-memory) that configures the default Java heap memory size.        | `2`               |
 | `LOG_LEVEL`                | The [log level to use](https://logback.qos.ch/manual/architecture.html#effectiveLevel).                            | `INFO`            |
 | `ZOOKEEPER_HOST`           | Zookeeper host and port.                                                                                           | *(None)*          |
 
@@ -26,8 +26,8 @@ The heap memory used by the Java Virtual Machine (JVM) is configured either thro
 - the `Xms` and `Xmx` parameters
 - if they are missing then it uses the default heap size
 
-The default heap size is configured via the `DefaultMaxRAMFraction` JVM parameter. It represents a fraction of the total available memory on the machine.
-This value is the denominator value under 1, i. e. `1/DefaultMaxRAMFraction`.
+The default heap size is configured via the `MaxRAMFraction` JVM parameter. It represents a fraction of the total available memory on the machine.
+This value is the denominator value under 1, i. e. `1/MaxRAMFraction`.
 For example, setting this value to 4 will result in the JVM to use 25% of the available memory as heap (1/4 of the available memory).
 
 ### Default heap space

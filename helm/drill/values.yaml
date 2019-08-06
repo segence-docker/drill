@@ -8,7 +8,7 @@ heapMemoryFraction: 2
 
 image:
   repository: segence/drill
-  tag: 1.16.0-1
+  tag: 1.16.0-2
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -56,10 +56,8 @@ volumes: []
 #    claim: task-pv-claim
 #    path: /tmp/data
 
-
-storage_plugins:
-#  - filename: hdfs.sys.drill
-#    conf: {
+storagePlugins:
+#  - hadoop: {
 #        "type": "file",
 #        "connection": "hdfs://{{ .Release.Name }}-hadoop-hdfs-nn:9000",
 #        "config": null,

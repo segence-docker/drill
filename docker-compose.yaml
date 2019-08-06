@@ -11,7 +11,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
   drill:
-    image: segence/drill:1.16.0-1
+    image: segence/drill:1.16.0-2
     hostname: drill
     container_name: drill
     expose:
