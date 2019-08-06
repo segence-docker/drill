@@ -25,7 +25,7 @@ Apache Drill is an open-source software framework that supports data-intensive d
 Storage plugin examples (hdfs):
 ```
 storagePlugins:
-  - conf: {
+  - hadoop: {
         "type": "file",
         "connection": "hdfs://{{ .Release.Name }}-hadoop-hdfs-nn:9000",
         "config": null,

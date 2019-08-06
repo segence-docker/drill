@@ -63,9 +63,8 @@ spec:
                   - "-c"
                   - |
                    touch ${DRILL_HOME}/conf/storage-plugins-override.conf;
- {{- $values := . -}}
-{{- range .Values.storagePlugins }}
-                    echo '{{ tpl ( .conf | toJson ) $values  }}'  >> ${DRILL_HOME}/conf/storage-plugins-override.conf
+{{- range $storageConfig := .Values.storagePlugins }}
+                   echo '{{ template "drill.configEntry" $storageConfig | toJson }}'  >> ${DRILL_HOME}/conf/storage-plugins-override.conf
 {{- end }}
 {{- end }}
           resources:
