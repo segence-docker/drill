@@ -20,13 +20,12 @@ Apache Drill is an open-source software framework that supports data-intensive d
 | `resources`             | Resource requests & limits                            | ``{}`                       |
 | `service.type`          |                                                       | `ClusterIP`                 |
 | `service.port`          |                                                       | `8047`                      |
-| `storage_plugins`       | List of storge plugins with filename and json conf    |                             |
+| `storagePlugins`        | List of storge plugins with JSON config               |                             |
 
 Storage plugin examples (hdfs):
 ```
-storage_plugins:
-  - filename: hdfs.sys.drill
-    conf: {
+storagePlugins:
+  - conf: {
         "type": "file",
         "connection": "hdfs://{{ .Release.Name }}-hadoop-hdfs-nn:9000",
         "config": null,
@@ -44,4 +43,5 @@ storage_plugins:
           }
         },
         "enabled": true
+      }
 ```

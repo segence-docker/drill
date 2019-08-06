@@ -57,9 +57,8 @@ volumes: []
 #    path: /tmp/data
 
 
-storage_plugins:
-#  - filename: hdfs.sys.drill
-#    conf: {
+storagePlugins:
+#  - conf: {
 #        "type": "file",
 #        "connection": "hdfs://{{ .Release.Name }}-hadoop-hdfs-nn:9000",
 #        "config": null,
