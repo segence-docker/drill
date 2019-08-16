@@ -32,7 +32,7 @@ To install the chart with the release name `my-drill` in the default
 namespace:
 
 ```
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
 $ helm install --name my-drill ./drill
 ```
 
@@ -40,7 +40,7 @@ If using a dedicated namespace(recommended) then make sure the namespace
 exists with:
 
 ```
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
 $ kubectl create ns drill
 $ helm install --name my-drill --namespace drill ./drill
 ```
