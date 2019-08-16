@@ -3,7 +3,53 @@ Drill Helm chart
 
 Apache Drill is an open-source software framework that supports data-intensive distributed applications for interactive analysis of large-scale datasets.
 
+## Pre Requisites:
+
+* Kubernetes 1.5
+
+* Requires at least `v2.0.0-beta.1` version of helm to support
+  dependency management with requirements.yaml
+
+## StatefulSet Details
+
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+
+## StatefulSet Caveats
+
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations
+
+## Chart Details
+
+This chart will do the following:
+
+* Implement a dynamically scalable Drill cluster using Kubernetes StatefulSets
+
+* Implement a dynamically scalable Zookeeper cluster as another Kubernetes StatefulSet required for the Kafka cluster above
+
+### Installing the Chart
+
+To install the chart with the release name `my-drill` in the default
+namespace:
+
+```
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-drill ./drill
+```
+
+If using a dedicated namespace(recommended) then make sure the namespace
+exists with:
+
+```
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ kubectl create ns drill
+$ helm install --name my-drill --namespace drill ./drill
+```
+
 ## Chart Configuration
+
+This chart includes a ZooKeeper chart as a dependency to the Drill
+cluster in its `requirement.yaml` by default. The chart can be customized using the
+following configurable parameters:
 
 | Parameter               | Description                                           | Default                     |
 | :---------------------- |:------------------------------------------------------| :---------------------------|
