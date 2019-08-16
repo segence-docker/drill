@@ -24,7 +24,7 @@ This chart will do the following:
 
 * Implement a dynamically scalable Drill cluster using Kubernetes StatefulSets
 
-* Implement a dynamically scalable Zookeeper cluster as another Kubernetes StatefulSet required for the Kafka cluster above
+* Implement a dynamically scalable Zookeeper cluster as another Kubernetes StatefulSet required for the Drill cluster above
 
 ### Installing the Chart
 
