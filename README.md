@@ -10,6 +10,8 @@ If not set, Drill starts in embedded mode.
 
 ## Configuration
 
+### System configuration
+
 Optional parameters (provided as environment variables):
 
 | **Environment variable** | **Description**                                                                                                      | **Default value** |
@@ -17,6 +19,11 @@ Optional parameters (provided as environment variables):
 | `HEAP_MEMORY_FRACTION`     | Sets the [`MaxRAMFraction` JVM parameter](##Heap-memory) that configures the default Java heap memory size.        | `2`               |
 | `LOG_LEVEL`                | The [log level to use](https://logback.qos.ch/manual/architecture.html#effectiveLevel).                            | `INFO`            |
 | `ZOOKEEPER_HOST`           | Zookeeper host and port.                                                                                           | *(None)*          |
+
+### Execution options
+
+Execution options can be set by using environment variables.
+The option name has to be transformed into an environment variable with upper-case characters and underscrores instead of dots in its name, e.g. `store.parquet.reader.columnreader.async` will become `STORE_PARQUET_READER_COLUMNREADER_ASYNC`.
 
 ## Heap memory
 
