@@ -8,7 +8,7 @@ heapMemoryFraction: 2
 
 image:
   repository: segence/drill
-  tag: 1.16.0-2
+  tag: 1.16.0-3
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -55,6 +55,9 @@ volumes: []
 #  - name: task-pv-volume
 #    claim: task-pv-claim
 #    path: /tmp/data
+
+execOptions: {}
+#  "store.parquet.reader.columnreader.async": true
 
 storagePlugins:
 #  - hadoop: {

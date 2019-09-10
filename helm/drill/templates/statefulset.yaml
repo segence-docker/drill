@@ -54,6 +54,9 @@ spec:
               name: controlport
             - containerPort: 31012
               name: dataport
+          volumeMounts:
+            - name: configuration
+              mountPath: /opt/drill/conf
 {{- if .Values.storagePlugins }}
           lifecycle:
             postStart:
@@ -86,9 +89,12 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- range .Values.volumes }}
       volumes:
+        - name: configuration
+          configMap:
+            name: {{ include "drill.fullname" . }}
+{{- range .Values.volumes }}
         - name: {{ .name }}
           persistentVolumeClaim:
             claimName: {{ .claim }}
-    {{- end }}
+{{- end }}
