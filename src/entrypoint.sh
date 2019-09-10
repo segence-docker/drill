@@ -3,9 +3,15 @@
 DRILL_OVERRIDE_CONF=${DRILL_HOME}/conf/drill-override.conf
 DRILL_EXEC_OPTIONS_PREFIX=DRILL_EXEC_
 
-function write_configuration {
+function set_zookeeper_host {
+    sed -i "s/zk.*/zk.connect: \"${1}\"/g" ${DRILL_OVERRIDE_CONF}
+}
 
-    if printenv | grep "^${DRILL_EXEC_OPTIONS_PREFIX}.*$" | wc -l > 0; then
+function set_exec_options {
+
+    DRILL_EXEC_OPTIONS=$(printenv | grep "^${DRILL_EXEC_OPTIONS_PREFIX}.*$" | wc -l)
+
+    if [[ "${DRILL_EXEC_OPTIONS}" > "0" ]]; then
 
         echo 'drill.exec.options: {' >> ${DRILL_OVERRIDE_CONF}
 
@@ -20,14 +26,26 @@ function write_configuration {
     fi
 }
 
+function start_embedded {
+    echo 'Starting in embedded mode...'
+    ${DRILL_HOME}/bin/drill-embedded
+}
+
+function start_cluster {
+    echo 'Starting in clustered mode...'
+    ${DRILL_HOME}/bin/drillbit.sh run
+}
+
 sed -i "s/export DRILLBIT_OPTS=\"-Xms.*/export DRILLBIT_OPTS=\"-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=${HEAP_MEMORY_FRACTION:-2}\"/g" ${DRILL_HOME}/bin/drill-config.sh
 
-if [[ -z "${ZOOKEEPER_HOST}" ]]; then
-    echo 'No Zookeeper configured, starting in embedded mode...'
-    ${DRILL_HOME}/bin/drill-embedded
+set_exec_options
+
+if [[ -n "${CLUSTERED_MODE}" && "${CLUSTERED_MODE}" == "true" ]]; then
+    if [[ -n "${ZOOKEEPER_HOST}" ]]; then
+        echo "Zookeeper host configured at ${ZOOKEEPER_HOST}, updating configuration..."
+        set_zookeeper_host ${ZOOKEEPER_HOST}
+    fi
+    start_cluster
 else
-    echo "Zookeeper host configured at ${ZOOKEEPER_HOST}, starting in clustered mode..."
-    sed -i "s/zk.*/zk.connect: \"${ZOOKEEPER_HOST}\"/g" ${DRILL_OVERRIDE_CONF}
-    write_configuration
-    ${DRILL_HOME}/bin/drillbit.sh run
+    start_embedded
 fi

@@ -23,6 +23,7 @@ services:
     environment:
       HEAP_MEMORY_FRACTION: 2
       LOG_LEVEL: INFO
+      CLUSTERED_MODE: 'true'
       ZOOKEEPER_HOST: zookeeper:2181
       DRILL_EXEC_STORE_PARQUET_READER_COLUMNREADER_ASYNC: 'true'
     cap_add:

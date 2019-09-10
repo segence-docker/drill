@@ -14,16 +14,35 @@ If not set, Drill starts in embedded mode.
 
 Optional parameters (provided as environment variables):
 
-| **Environment variable** | **Description**                                                                                                      | **Default value** |
-|:---------------------------|:-------------------------------------------------------------------------------------------------------------------|:------------------|
-| `HEAP_MEMORY_FRACTION`     | Sets the [`MaxRAMFraction` JVM parameter](##Heap-memory) that configures the default Java heap memory size.        | `2`               |
-| `LOG_LEVEL`                | The [log level to use](https://logback.qos.ch/manual/architecture.html#effectiveLevel).                            | `INFO`            |
-| `ZOOKEEPER_HOST`           | Zookeeper host and port.                                                                                           | *(None)*          |
+| **Environment variable** | **Description**                                                                                                                       | **Default value** |
+|:-------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|:------------------|
+| `HEAP_MEMORY_FRACTION`   | Sets the [`MaxRAMFraction` JVM parameter](##Heap-memory) that configures the default Java heap memory size.                           | `2`               |
+| `LOG_LEVEL`              | The [log level to use](https://logback.qos.ch/manual/architecture.html#effectiveLevel).                                               | `INFO`            |
+| `CLUSTERED_MODE`         | Boolean value, indicating whether Drill should run in clustered mode. More information on [clustered mode](## Clustered mode) below.  | `false`           |
 
-### Execution options
+### Configuration options
 
-Execution options can be set by using environment variables.
-The option name has to be transformed into an environment variable with upper-case characters and underscrores instead of dots in its name, e.g. `store.parquet.reader.columnreader.async` will become `STORE_PARQUET_READER_COLUMNREADER_ASYNC`.
+#### Configuration via environment variables
+
+In this mode, environment variables can be defined to override the default configuration.
+
+| **Environment variable** | **Description**                                                                         | **Default value** |
+|:---------------------------|:--------------------------------------------------------------------------------------|:------------------|
+| `ZOOKEEPER_HOST`           | Zookeeper host and port. Setting it will automatically start Drill in clustered mode. | *(None)*          |
+| `DRILL_EXEC_*`             | Various execution options, described in details below.                                | *(None)*          |
+
+All execution options can be set by using environment variables.
+The option name has to be transformed into an environment variable with upper-case characters and underscrores instead of dots in its name. In addition, the prefix `DRILL_EXEC_` needs to be added. Example: the `store.parquet.reader.columnreader.async` will become `DRILL_EXEC_STORE_PARQUET_READER_COLUMNREADER_ASYNC`.
+
+#### Configuration via mounted configuration file
+
+The `drill-override.conf` file can be mounted under `/opt/drill/conf/drill-override.conf`. Using this method does not require to set environment variables.
+
+## Clustered mode
+
+Drill can be started in a clustered mode. Clustered mode requires Zookeeper running.
+The `CLUSTERED_MODE` environment variable must be set to `true` to start Drill in clustered mode.
+Clustered mode requires Zookeeper to be running therefore either the `ZOOKEEPER_HOST` environment variable must be set or a valid `zk.connect` parameter must be provided in a mounted `drill-override.conf` file.
 
 ## Heap memory
 
