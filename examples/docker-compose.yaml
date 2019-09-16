@@ -11,7 +11,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
   drill:
-    image: segence/drill:1.16.0-2
+    image: segence/drill:1.16.0-3
     hostname: drill
     container_name: drill
     expose:
@@ -23,6 +23,8 @@ services:
     environment:
       HEAP_MEMORY_FRACTION: 2
       LOG_LEVEL: INFO
+      CLUSTERED_MODE: 'true'
       ZOOKEEPER_HOST: zookeeper:2181
+      DRILL_EXEC_STORE_PARQUET_READER_COLUMNREADER_ASYNC: 'true'
     cap_add:
       - SYS_PTRACE

@@ -1,0 +1,30 @@
+---
+version: '3'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.3.0
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  drill:
+    image: segence/drill:1.16.0-3
+    hostname: drill
+    container_name: drill
+    expose:
+      - 31010
+      - 31011
+      - 31012
+    ports:
+      - 8047:8047
+    volumes:
+      - ./drill-override.conf:/opt/drill/conf/drill-override.conf
+    environment:
+      HEAP_MEMORY_FRACTION: 2
+      LOG_LEVEL: INFO
+      CLUSTERED_MODE: 'true'
+    cap_add:
+      - SYS_PTRACE

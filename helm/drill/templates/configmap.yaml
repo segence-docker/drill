@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "drill.fullname" . }}
+  labels:
+    app: {{ template "drill.name" . }}
+    chart: {{ template "drill.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- with .Values.additionalLabels }}
+{{ toYaml . | indent 4 }}
+    {{- end }}
+data:
+  drill-override.conf: |
+    drill.exec: {
+      cluster-id: "drillbits1",
+      zk.connect: "{{ .Release.Name }}-zookeeper:2181"
+    }
+{{- if .Values.execOptions }}
+    drill.exec.options: { 
+{{- range $key, $value := .Values.execOptions }}
+        {{ $key }}: {{ $value }}
+{{- end }}
+    }
+{{- end }}
