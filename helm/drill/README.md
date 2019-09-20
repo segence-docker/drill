@@ -67,7 +67,14 @@ following configurable parameters:
 | `resources`             | Resource requests & limits                            | ``{}`                       |
 | `service.type`          |                                                       | `ClusterIP`                 |
 | `service.port`          |                                                       | `8047`                      |
-| `storagePlugins`        | List of storge plugins with JSON config               |                             |
+| `execOptions`           | Various execution options                             | `{}`                        |
+| `storagePlugins`        | List of storge plugins with JSON config               | `{}`                        |
+
+Execution options examples:
+```
+execOptions:
+  "store.parquet.reader.columnreader.async": true
+```
 
 Storage plugin examples (hdfs):
 ```

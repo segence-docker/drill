@@ -35,6 +35,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            - name: CLUSTERED_MODE
+              value: "true"
             - name: HEAP_MEMORY_FRACTION
               value: {{ .Values.heapMemoryFraction | quote }}
             - name: LOG_LEVEL
@@ -57,19 +59,6 @@ spec:
           volumeMounts:
             - name: configuration
               mountPath: /opt/drill/conf
-{{- if .Values.storagePlugins }}
-          lifecycle:
-            postStart:
-              exec:
-                command:
-                  - "/bin/sh"
-                  - "-c"
-                  - |
-                   touch ${DRILL_HOME}/conf/storage-plugins-override.conf;
-{{- range $storageConfig := .Values.storagePlugins }}
-                   echo '{{ template "drill.configEntry" $storageConfig | toJson }}'  >> ${DRILL_HOME}/conf/storage-plugins-override.conf
-{{- end }}
-{{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- range .Values.volumes }}
