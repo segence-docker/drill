@@ -1,0 +1,75 @@
+replicaCount: 2
+resources:
+  limits:
+   cpu: 1000m
+   memory: 2Gi
+  requests:
+   cpu: 10m
+   memory: 1Gi
+annotations:
+  iam.amazonaws.com/role: drill-iam-role
+zookeeper:
+  replicaCount: 3
+  persistence:
+    enabled: false
+execOptions:
+  "store.parquet.reader.columnreader.async": true
+storagePlugins:
+   - prod: {
+        "type": "file",
+        "connection": "s3a://message-archive",
+        "config": {
+          "fs.s3a.aws.credentials.provider": "com.amazonaws.auth.InstanceProfileCredentialsProvider",
+          "fs.s3a.aws.fast.upload": true,
+          "fs.s3a.aws.fast.upload.buffer": "disk"
+        },
+        "workspaces": {
+          "root": {
+            "location": "/",
+            "writable": false,
+            "defaultInputFormat": "parquet",
+            "allowAccessOutsideWorkspace": false
+          },
+          "change": {
+            "location": "/feature/change",
+            "writable": false,
+            "defaultInputFormat": "parquet",
+            "allowAccessOutsideWorkspace": true
+          },
+          "snapshot": {
+            "location": "/feature/snapshot",
+            "writable": false,
+            "defaultInputFormat": "parquet",
+            "allowAccessOutsideWorkspace": true
+          }
+        },
+        "formats": {
+          "parquet": {
+            "type": "parquet"
+          }
+        },
+        "enabled": true
+      }
+   - dev: {
+        "type": "file",
+        "connection": "s3a://test-data",
+        "config": {
+          "fs.s3a.aws.credentials.provider": "com.amazonaws.auth.InstanceProfileCredentialsProvider",
+          "fs.s3a.aws.fast.upload": true,
+          "fs.s3a.aws.fast.upload.buffer": "disk"
+        },
+        "workspaces": {
+          "root": {
+            "location": "/",
+            "writable": false,
+            "defaultInputFormat": "parquet",
+            "allowAccessOutsideWorkspace": false
+          }
+        },
+        "formats": {
+          "parquet": {
+            "type": "parquet"
+          }
+        },
+        "enabled": true
+      }
